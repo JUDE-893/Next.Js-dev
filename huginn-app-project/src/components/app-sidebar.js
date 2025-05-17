@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, LogOut } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings, LogOut, Box, Radio, Video, Voicemail,Package  } from "lucide-react"
 
 import {
   Sidebar,
@@ -10,6 +10,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import InboxDrawer from  '@/components/inbox/InboxDrawer';
+
 
 // Menu items.
 const items = [
@@ -19,25 +21,41 @@ const items = [
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "Box",
     url: "#",
-    icon: Inbox,
+    icon: Box,
   },
   {
-    title: "Calendar",
+    title: "Radio",
     url: "#",
-    icon: Calendar,
+    icon: Radio,
   },
+  {
+    title: "Video",
+    url: "#",
+    icon: Video,
+  },
+  {
+    title: "Voicemail ",
+    url: "#",
+    icon: Voicemail ,
+  },
+  // {
+  //   title: "Calendar",
+  //   url: "#",
+  //   icon: Calendar,
+  // },
   {
     title: "Search",
     url: "#",
     icon: Search,
   },
   {
-    title: "Settings",
+    title: "Inbox",
     url: "#",
-    icon: Settings,
+    icon: InboxDrawer,
   },
+
 ]
 
 export function AppSidebar() {
@@ -47,7 +65,7 @@ export function AppSidebar() {
         <SidebarGroup>
           {false && <SidebarGroupLabel>Application</SidebarGroupLabel>}
           <SidebarGroupContent >
-            <SidebarMenu >
+            <SidebarMenu className="gap-2" >
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -63,9 +81,14 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Log In/Out Button */}
-        <SidebarMenuButton asChild className="absolute bottom-20">
-          <LogOut size={20} />
-        </SidebarMenuButton>
+        <div className="absolute flex flex-col bottom-20 gap-2 w-full">
+          <SidebarMenuButton asChild >
+            <Settings size={20} />
+          </SidebarMenuButton>
+          <SidebarMenuButton asChild >
+            <LogOut size={20} />
+          </SidebarMenuButton>
+        </div>
 
       </SidebarContent>
     </Sidebar>
