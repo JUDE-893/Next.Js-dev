@@ -1,29 +1,36 @@
-import ContactSideBar from "@/components/main/ContactSideBar"
+'use client'
+
+import { useParams } from 'next/navigation';
+import { useGetConversations } from '@/hooks/conversation/useConversation'
 import MessagesBox from "@/components/main/chatbox/MessagesBox"
 import Header from "@/components/main/chatbox/Header"
 import EntryFields from "@/components/main/chatbox/EntryFields"
+import ReportInterface from "@/components/ui/custom/ReportInterface"
 
 
 export default function Home({children}) {
 
-  const destinator = {
-    name: "Jonnas Schmidtmann",
-    id: "fe425d6de400p7",
-    nameTag: "JS",
-    profileImage: null,
-    message: {content : 'That\'s good', time: "7:14"},
-    status: "online"
-  };
+  const params = useParams();
+  const {data, isLoading, error} = useGetConversations()
+
+  // error handing
+  if (error) return <ReportInterface image='/monitor_ypga.svg' message={<p className='italic'>Oops! Something went wrong.. Try again.</p>}/>;
+
+  // get the destinater
+  let destinator = data?.conversations?.filter((conv) => conv?._id === params.conversationID)?.[0]?.participants?.[0]?.participant;
+
+  // check if valid conversation id
+  if (!destinator) return <ReportInterface orn='horizental' image='/new-message_nl8w.svg' message={<p className='w-56 text-primary italic'>"Like the wandering thoughts of wisdom and memory, let ideas take flight. Seek, share, and bring knowledge back from the horizons."</p>}/>;
 
   return (
     <div className="flex flex-col w-full ml-0 px-0 min-h-screen font-[family-name:var(--font-geist-sans)] relative">
       <Header contact={destinator} className=" absolute top-0" />
       <main className="flex-1 pt-20">
         {/* messages box */}
-        <MessagesBox  />
+        <MessagesBox conv_id={params.conversationID}  />
       </main>
       {/* entry box */}
-      <EntryFields className=" absolute bottom-0" />
+      <EntryFields className=" absolute bottom-0" conv_id={params.conversationID} />
     </div>
   );
 }

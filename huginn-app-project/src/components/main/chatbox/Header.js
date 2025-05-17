@@ -3,7 +3,7 @@
 import { Phone, Video, EllipsisVertical  } from 'lucide-react';
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import Contact from "@/components/main/Contact"
+import Contact from "@/components/main/contact/Contact"
 import Menu from "./DropDownMenu"
 
 export default function Header({contact, className}) {

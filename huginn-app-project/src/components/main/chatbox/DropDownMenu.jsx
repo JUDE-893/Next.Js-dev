@@ -18,8 +18,8 @@ import {
 import AlertDialog from "@/components/ui/custom/AlertDialog";
 import ReportModal from "@/components/ui/custom/ReportModal";
 import ComboboxPopover from "@/components/ui/custom/ComboboxPopover";
-import ComboModal from "@/components/main/chatbox/ComboModal";
-import Contact from "@/components/main/Contact";
+import ComboModal from "@/components/ui/custom/ComboModal";
+import Contact from "@/components/main/contact/Contact";
 
 
 export default function Menu() {
