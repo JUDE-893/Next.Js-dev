@@ -19,21 +19,20 @@ export const {handlers:{GET, POST}, auth} =  NextAuth({
   },
 
   callbacks: {
-    async authorized(auth, request) {
-        return !!auth?.['auth']?.['user']?.['data']?.['token'];
-    },
 
-    async signIn({ user, error }) {
-      if (!user.response.ok) {
-        // Bypass NextAuth's error rewriting
+  async signIn({ user, error }) {
+
+      if (!user?.response?.ok) {
+        // Bypass NextAuth's error rewriting;
+        console.log('signin dataddddd',user.data);
         const errorParams = new URLSearchParams({
           error: JSON.stringify(user.data),
           code: user.response.status || "unknown",
           status: +(user.response.status || 500),
           ok: false,
         });
-        return `/auth/error'?${errorParams.toString()}`;
-      }
+        return `/auth/error?${errorParams.toString()}`;
+      };
 
       // Set cookie only on successful login
       if (user?.data?.token) {
@@ -50,6 +49,7 @@ export const {handlers:{GET, POST}, auth} =  NextAuth({
       return true;
   },
 
+
   async jwt({ token, user }) {
     if (token) {
       token = { ...token, ...user };
@@ -57,10 +57,20 @@ export const {handlers:{GET, POST}, auth} =  NextAuth({
     }
     return token.error;
   },
+
+
   async session({ session, token }) {
     session.user = token;
     return session;
   },
+
+  async authorized(auth, request) {
+
+    let l = auth?.["auth"]?.["user"]?.["data"]?.["token"];
+    console.log(l);
+    return l;
+  },
+
 
 },
   // Additional configuration

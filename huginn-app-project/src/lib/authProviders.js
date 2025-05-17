@@ -20,7 +20,7 @@ export const credentialOption = CredentialsProvider({
           }
 
           // make auth request
-          let response = await fetch(process.env.API_BASE_URL+url, {
+          let response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL+"/auth"+url, {
             method: 'POST',
             headers: {
               "content-type": 'application/json'
@@ -30,7 +30,7 @@ export const credentialOption = CredentialsProvider({
 
           // response
           const data = await response.json();
-
+          console.log(data);
           // if (!response.ok) {
           //   // Create a custom error object that NextAuth won't override
           //   const error = new AuthError(JSON.stringify(data));
@@ -44,7 +44,8 @@ export const credentialOption = CredentialsProvider({
           // if (error?.name === 'ApiError') throw error;
           throw new AuthError(JSON.stringify({
             statusCode: 500,
-            message: 'Authentication failed'
+            message: 'Authentication failed',
+            error: error.message
           }));
         }
       }
