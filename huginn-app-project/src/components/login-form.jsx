@@ -1,6 +1,7 @@
 'use client'
 
-import {useEffect} from 'react'
+import {useEffect, useMemo} from 'react'
+import {useSearchParams, useRouter} from 'next/navigation'
 import {useAuthenticate} from '@/hooks/auth/useAuthenticate'
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -15,18 +16,38 @@ import { Label } from "@/components/ui/label"
 export function LoginForm({
   className,
   ...props
-}) {
+  }) {
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const reason = searchParams.get('reason');
 
   const {authonticate, Authenticating, authError} = useAuthenticate();
-  
+
 
   useEffect(()=> {
+    console.log(authError)
+    // auth error toast
     Boolean(authError) && toast(JSON.parse(authError.message).status === 'fails' ? "Validation Failed": "Oops! something went wrong.. Try again.", {
        variant: "destructive",
-       description: <p className='text-secondary text-xs'>{JSON.parse(authError.message).message}</p>
-    })
+       description: <p className='text-destructive text-xs'>{JSON.parse(authError.message).message}</p>
+    });
+
   },[authError])
+
+  useMemo(() => {
+    // session error toast
+    // toast("Log in again", {
+    //     id:'idxxxx',
+    //     variant: "destructive",
+    //     duration: Infinity,
+    //     description: <p className="text-destructive text-xs">s{reason}</p>
+    //   });
+    //
+    //   console.log(reason);
+
+  })
+
 
 
   let payload = {
@@ -40,7 +61,9 @@ export function LoginForm({
 
       <Card className="overflow-hidden bg-background p-0 w-100">
         <CardContent className="grid p-0 ">
-          <form onSubmit={(e) => {e.preventDefault(); authonticate(payload)}} className="p-6 md:p-8">
+          <form onSubmit={(e) => {e.preventDefault(); authonticate(payload, {
+            onSuccess: () => router.push('/chat')
+          })}} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -106,8 +129,6 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-
-
 
       <div
         className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
