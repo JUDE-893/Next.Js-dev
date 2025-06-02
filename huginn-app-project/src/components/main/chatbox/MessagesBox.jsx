@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useGetMessages } from '@/hooks/conversation/useMessage';
 import dynamic from 'next/dynamic';
 
@@ -14,16 +14,24 @@ const ScrollShadow = dynamic(
 
 export default function MessagesBox({className, conv_id}) {
 
+  const bottomRef = useRef(null);
   const [lastSender, setLastSender] = useState(null);
   let sender = lastSender;
 
   const {data, fetchNextPage, hasNextPage, isFetchingNextPage} = useGetMessages(conv_id);
-  console.log('=============',data);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 500);
+
+    return () => clearTimeout(timeoutId); // Cleanup on unmount
+  }, [data?.pages?.[0]?.messages]);
+
 
   // if( error ) return <p className='text-destructive text-md ml-20 mt-50'> Oops! Something went wrong. try later ..</p>
 
   if( isFetchingNextPage ) return <Loader2 size={40} className="animate-spin text-primary ml-45 mr-25 mt-50" />
-
 
 
   //  function that decides where the message component should show the user avatar is case of a new chat  <ls_id> : last sender id
@@ -34,16 +42,20 @@ export default function MessagesBox({className, conv_id}) {
     // To contenu : && message.date.month & dat & year == new date() => true
   }
 
-
-
+  console.log('type of mesage',  data?.pages?.[0]?.messages.__proto__);
   return (
-    <ScrollShadow size={100} hideScrollBar className={"h-[80vh] flex-1"+className} >
-      <div className={`${!Boolean(data?.pages?.[0]?.messages?.length > 0) && 'h-full'} `}>
-      {Boolean(data?.pages?.[0]?.messages?.length > 0) ? data?.pages?.[0]?.messages.map((msg) => <MessageItem isJoinMessage={isJoinMessage(msg.sender._id)} message={msg} /> )
-        : <span className=' flex flex-col justify-center h-full items-center text-center text-muted italic'>No messages yet! Remember a conversation <br />always start from one part ;)</span>}
+    <ScrollShadow size={100} hideScrollBar className={`h-[80vh] flex-1 ${className}`}>
+      <div className={(data?.pages[0].messages.length > 0) ? "h-full" : ""}>
+        {(data?.pages[0].messages.length > 0)
+          ? data?.pages[0].messages.map((msg) =>
+              <MessageItem isJoinMessage={isJoinMessage(msg.sender._id)} message={msg} />
+            )
+          : <span className='flex flex-col justify-center h-full items-center text-center text-muted italic'>
+              No messages yet! Remember, a conversation always starts from one part ;)
+            </span>
+        }
+        <div className='pt-6' ref={bottomRef} />
       </div>
     </ScrollShadow>
-
-
-  )
+  );
 }

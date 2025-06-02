@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, createContext } from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 import { getSession } from 'next-auth/react';
 import { io } from 'socket.io-client';
 
@@ -8,13 +8,12 @@ const SocketContext = createContext();
 
 export default function SocketProvider({children}) {
 
-  const [socketClient, setSocketClient] = useState();
+  const [socketClient, setSocketClient] = useState(null);
 
   // INITIATE THE SOCKET CLIENT
   useEffect(() => {
     (async () => {
       const session = await getSession();
-
        setSocketClient(io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL, {
          auth: {token: session.user.data.token},
          transports: ['websocket', 'polling'],
@@ -32,10 +31,17 @@ export default function SocketProvider({children}) {
     };
   },[])
 
-  console.log("socketClient",socketClient);
   return (
     <SocketContext.Provider value={socketClient} >
       { children }
     </SocketContext.Provider>
   )
+}
+
+
+// // CUSTOM HOOK
+export function useSocket() {
+  const socketClient = useContext(SocketContext);
+  if (socketClient === undefined) throw new Error('socket context was used outside of provider scoop');
+  return socketClient
 }

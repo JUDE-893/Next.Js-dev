@@ -1,7 +1,10 @@
 'use client'
 
 import { useParams } from 'next/navigation';
-import { useGetConversations } from '@/hooks/conversation/useConversation'
+import { useGetConversations } from '@/hooks/conversation/useConversation';
+import { useNewMessage } from '@/hooks/conversation/useMessage';
+import { useNewConversationMessage } from '@/hooks/conversation/useConversation';
+import { useSocketEvent } from '@/hooks/socket/useSocketEvent';
 import MessagesBox from "@/components/main/chatbox/MessagesBox"
 import Header from "@/components/main/chatbox/Header"
 import EntryFields from "@/components/main/chatbox/EntryFields"
@@ -12,6 +15,14 @@ export default function Home({children}) {
 
   const params = useParams();
   const {data, isLoading, error} = useGetConversations()
+  const setNewMessage = useNewMessage();
+  const setNewConversationMessage = useNewConversationMessage();
+  const socketEvent = useSocketEvent('new-message',(data) => {
+    let msgData = JSON.parse(data);
+    console.log('{new-message data}',msgData);
+    setNewMessage(msgData.conv_id, msgData);
+    setNewConversationMessage(msgData.conv_id, msgData);
+  });
 
   // error handing
   if (error) return <ReportInterface image='/monitor_ypga.svg' message={<p className='italic'>Oops! Something went wrong.. Try again.</p>}/>;
@@ -30,7 +41,7 @@ export default function Home({children}) {
         <MessagesBox conv_id={params.conversationID}  />
       </main>
       {/* entry box */}
-      <EntryFields className=" absolute bottom-0" conv_id={params.conversationID} />
+      <EntryFields className=" absolute bottom-0" conv_id={params.conversationID} socketEvent={socketEvent}/>
     </div>
   );
 }

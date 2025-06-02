@@ -9,7 +9,7 @@ import MessageContextMenu from './MessageContextMenu'
 
 export default function MessageItem({className, message, isJoinMessage}) {
 
-  console.log('message', message);
+
   const [msg, setMsg] = useState(null)
 
   useEffect( () => {
@@ -28,7 +28,7 @@ export default function MessageItem({className, message, isJoinMessage}) {
           <p className='text-xs text-muted ml-3 mt-1'>{timeFormat(message.createdAt)}</p>}
         >
         </Contact>}
-        <div className=' text-muted-foreground text-[13.4px] mt-[-3px] pl-2 ml-2 border-rigth-1 hover:bg-secondary py-1 radius-1'>{msg}</div></>
+        <div className=' text-muted-foreground text-[13.4px] mt-[-3px] pl-2 ml-2 border-rigth-1 hover:bg-card py-1 radius-1'>{msg}</div></>
       }
     </div>
     </MessageContextMenu >

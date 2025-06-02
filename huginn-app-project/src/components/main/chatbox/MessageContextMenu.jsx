@@ -16,7 +16,7 @@ import {
 
 
 
-export default function MessageContextMenu({children, id}) {
+export default function MessageContextMenu({children, CachedMessage}) {
 
   return (
     <ContextMenu>

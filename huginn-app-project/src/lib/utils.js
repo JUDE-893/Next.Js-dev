@@ -35,3 +35,8 @@ export const shorterStr = (str,ln) => {
   }
   return str
 }
+
+// generate a unique random string
+export function generateUniqueStr() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}

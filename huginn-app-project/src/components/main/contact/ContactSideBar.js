@@ -93,7 +93,6 @@ export default function ContactSideBar() {
       let decryptedMessages = await data?.conversations?.map(async (item) => {
         if (item?.lastMessage) { // message exists
           let { encrypted, iv } = item?.lastMessage?.content?.text;
-          console.log(iv.length, encrypted.length);
           let message  = await decryptMessage(encrypted, iv);
           return shorterStr(message,30);
         }
@@ -130,7 +129,7 @@ export default function ContactSideBar() {
               {data && data?.conversations?.map((item, index) => (
                 <SidebarMenuItem key={item._id}>
                   <Link href={`/${item?._id}`}>
-                    <Contact contact={item.participants[0].participant} className=' hover:bg-secondary' sideChild={
+                    <Contact contact={item?.name ?? item.participants[0].participant} className=' hover:bg-secondary' sideChild={
                       item?.lastMessage ? <p className='text-input text-xs absolute right-0'>{timeFormat(item?.lastMessage?.createdAt)}</p> : ""
                     }>
 

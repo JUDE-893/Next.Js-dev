@@ -18,6 +18,7 @@ export default function InviteContactModal({children, className}) {
     <AlertDialog className={className} pending={sending} label={"Invite Contact"}
       callBack={handleInvite}
       trigger={children}
+      disabled={!Boolean(username)}
       >
       <Input value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder='You can send invitation by typing the username : e.g @user_name_01'/>
     </AlertDialog>
