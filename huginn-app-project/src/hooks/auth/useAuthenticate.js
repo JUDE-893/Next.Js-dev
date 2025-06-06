@@ -1,5 +1,6 @@
 import {useMutation} from '@tanstack/react-query';
 import { signIn } from "next-auth/react";
+import { sendVerificationMail } from '@/lib/userServices';
 
 export function useAuthenticate(data) {
   const {isPending, mutate, error} = useMutation({
@@ -20,4 +21,12 @@ export function useAuthenticate(data) {
   })
 
   return {Authenticating: isPending,authonticate: mutate, authError: error}
+}
+
+export function useSendVerificationMail() {
+  const {isPending, mutate, error} = useMutation({
+    mutationFn: sendVerificationMail
+  })
+  return {sending: isPending,reSend: mutate, sendError: error}
+
 }

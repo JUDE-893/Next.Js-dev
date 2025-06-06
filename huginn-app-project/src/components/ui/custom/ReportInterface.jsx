@@ -1,8 +1,8 @@
 import Image from 'next/image'
 
-export default function ReportInterface({image ,message, orn='vartical'}) {
+export default function ReportInterface({image ,message, orn='vartical', className}) {
   return (
-    <div className={`flex ${orn === 'vartical' ? 'flex-col' : ''} justify-center items-center relative w-full h-full`}>
+    <div className={`flex ${orn === 'vartical' ? 'flex-col' : ''} justify-center items-center relative w-full h-full ${className}`}>
         <Image
           src={image} // Use local or external images
           alt="@Image"

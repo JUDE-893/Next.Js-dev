@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth'
+import { NextResponse } from 'next/server';
 import {credentialOption} from '@/lib/authProviders'
 
 
@@ -14,7 +15,7 @@ export const {handlers:{GET, POST}, auth} =  NextAuth({
   // Custom pages (optional)
   pages: {
     signIn: '/login',
-    signUp: '/registery',
+    signUp: '/register',
     error: '/auth/error'  // Custom sign-in page
   },
 
@@ -67,7 +68,7 @@ export const {handlers:{GET, POST}, auth} =  NextAuth({
   async authorized(auth, request) {
 
     let l = auth?.["auth"]?.["user"]?.["data"]?.["token"];
-    console.log(l);
+    // console.log('l', l);
     return l;
   },
 

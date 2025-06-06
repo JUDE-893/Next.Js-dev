@@ -1,13 +1,54 @@
 
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth'
+import { auth } from '@/auth';
+import { middlewarePipline } from '@/lib/middleware';
+import { geoRestrict } from '@/middlewares/geoRestrict';
+import { verifiedRestrict } from '@/middlewares/verifiedRestrict';
+import { withAuth } from '@/middlewares/auth';
 
-export const middleware = auth
 
-export const config = {
-  matcher: ["/:id"],
+const publicRoutes = [
+  '/login',
+  '/register',
+  '/reset-password',
+  '/forget-password',
+  '/unverified-account',
+]
+
+export const middleware = async (request) => {
+  const { pathname } = request.nextUrl;
+  // force skip static routes
+  if (pathname.startsWith('_next') || pathname.includes('.')) {
+    return NextResponse.next();
+  }
+
+  // public routes middleware
+  if (publicRoutes.includes(pathname)) {
+    return middlewarePipline([geoRestrict/*, guest*/]) (request)
+  }
+
+  if (pathname.startsWith('/api')) {
+    return middlewarePipline([geoRestrict/*, guest*/]) (request)
+  }
+
+  // protected routes
+  return middlewarePipline([withAuth, geoRestrict, verifiedRestrict]) (request)
+
 }
 
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
+}
+
+// export const config = {
+//   matcher: ["/:id"],
+// }
+
+// export const middleware = auth
+
+// export const middleware = async (request) => await auth(request);
 
 
 // export async function middleware(request) {
