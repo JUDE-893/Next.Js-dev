@@ -1,34 +1,27 @@
-import { promises as fs } from "fs"
+'use client'
+
 import path from "path"
-import Image from "next/image"
+import { useGetTasks } from '@/hooks/useTask';
+import Image from "next/image";
 
-import { columns } from "@/components/custom/columns"
-import { DataTable } from "@/components/custom/data-table"
-import { UserNav } from "@/components/custom/user-nav"
-import { taskSchema } from "./data/schema"
+import { columns } from "@/components/custom/columns";
+import { DataTable } from "@/components/custom/data-table";
+import { UserNav } from "@/components/custom/user-nav";
+import { ModeToggle } from "@/components/custom/ThemeSwitcher";
+import { Moon } from 'lucide-react'
+// import { taskSchema } from "./data/schema";
 
-export const metadata = {
-  title: "Tasks",
-  description: "A task and issue tracker build using Tanstack Table.",
-}
 
-// Simulate a database read for tasks.
-async function getTasks() {
-  const data = await fs.readFile(
-    path.join(process.cwd(), "app/(app)/examples/tasks/data/tasks.json")
-  )
 
-  const tasks = JSON.parse(data.toString())
 
-  return taskSchema.array().parse(tasks)
-}
+export default function TaskPage() {
 
-export default async function TaskPage() {
-  const tasks = await getTasks()
+  const {isLoading, data, error} = useGetTasks();
 
   return (
     <>
       <div className="md:hidden">
+
         <Image
           src="/examples/tasks-light.png"
           width={1280}
@@ -52,11 +45,12 @@ export default async function TaskPage() {
               Here&apos;s a list of your tasks for this month!
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 gap-3">
+            <ModeToggle className="" />
             <UserNav />
           </div>
         </div>
-        <DataTable data={tasks} columns={columns} />
+        <DataTable data={data?.tasks ?? []} columns={columns} />
       </div>
     </>
   )

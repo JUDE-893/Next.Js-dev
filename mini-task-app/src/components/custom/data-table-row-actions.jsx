@@ -1,5 +1,7 @@
 "use client"
 
+import { useDeleteTask } from '@/hooks/useTask';
+import Link from 'next/link';
 import { MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -15,15 +17,19 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
-import { labels } from "../data/data"
-import { taskSchema } from "../data/schema"
+
+import { labels } from "@/dev-data/data"
+// import { taskSchema } from "@/dev-data/schema"
 
 export function DataTableRowActions({
   row,
 }) {
-  const task = taskSchema.parse(row.original)
+  // const task = taskSchema.parse(row.original)
+  const task = row.original;
+  console.log('task',task, task._id);
+  const {isPending, mutate, DeleteError} = useDeleteTask();
 
   return (
     <DropdownMenu>
@@ -37,7 +43,8 @@ export function DataTableRowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem><Link href={`tasks/${task?._id}`}>Show</Link></DropdownMenuItem>
+        <DropdownMenuItem><Link href={`tasks/${task?._id}/update`}>Edit</Link></DropdownMenuItem>
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -54,7 +61,7 @@ export function DataTableRowActions({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => mutate(task?._id)}>
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>

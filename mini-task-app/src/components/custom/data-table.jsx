@@ -12,6 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
+
 import {
   Table,
   TableBody,
@@ -32,7 +33,7 @@ export function DataTable({
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
-
+  console.log(data);
   const table = useReactTable({
     data,
     columns,
@@ -78,7 +79,7 @@ export function DataTable({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          {true && <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -105,7 +106,7 @@ export function DataTable({
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
+          </TableBody>}
         </Table>
       </div>
       <DataTablePagination table={table} />

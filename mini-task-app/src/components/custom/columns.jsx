@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 
-import { labels, priorities, statuses } from "../data/data"
+import { labels, priorities, statuses } from "@/dev-data/data"
 import { DataTableColumnHeader } from "@/components/custom/data-table-column-header"
 import { DataTableRowActions } from "@/components/custom/data-table-row-actions"
 

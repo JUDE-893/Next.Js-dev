@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/custom/data-table-view-options"
 
-import { priorities, statuses } from "../data/data"
+import { priorities, statuses } from "@/dev-data/data"
 import { DataTableFacetedFilter } from "@/components/custom/data-table-faceted-filter"
 
 export function DataTableToolbar({
