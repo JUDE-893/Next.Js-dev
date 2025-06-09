@@ -1,10 +1,11 @@
 'use client'
 
-import {useEffect, useMemo} from 'react'
-import {useSearchParams, useRouter} from 'next/navigation'
+import {useEffect} from 'react'
 import {useAuthenticate} from '@/hooks/auth/useAuthenticate'
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { useSession } from 'next-auth/react';
+import { useForm, Controller } from "react-hook-form"
 
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
@@ -13,79 +14,80 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
-  }) {
+}) {
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const reason = searchParams.get('reason');
+  const { register, handleSubmit, watch, formState: { errors }} = useForm({defaultValues: {
+    redirect: false,
+    mode: 'register',
+    }});
 
   const {authonticate, Authenticating, authError} = useAuthenticate();
 
 
   useEffect(()=> {
-    console.log(authError)
-    // auth error toast
     Boolean(authError) && toast(JSON.parse(authError.message).status === 'fails' ? "Validation Failed": "Oops! something went wrong.. Try again.", {
        variant: "destructive",
-       description: <p className='text-destructive text-xs'>{JSON.parse(authError.message).message}</p>
-    });
-
+       description: <p className='text-secondary text-xs'>{JSON.parse(authError.message).message}</p>
+    })
   },[authError])
 
-  useMemo(() => {
-    // session error toast
-    // toast("Log in again", {
-    //     id:'idxxxx',
-    //     variant: "destructive",
-    //     duration: Infinity,
-    //     description: <p className="text-destructive text-xs">s{reason}</p>
-    //   });
-    //
-    //   console.log(reason);
-
-  })
-
-
-
-  let payload = {
-    redirect: false,
-    email: 'Kristopher.Bauermann@mail.de',
-    password:'Password123'
-  }
 
   return (
     <div className={cn("flex flex-col gap-6 items-center", className)} {...props}>
 
-      <Card className="overflow-hidden bg-background p-0 w-100">
+
+      <Card className="overflow-hidden bg-background p-0 w-110">
         <CardContent className="grid p-0 ">
-          <form onSubmit={(e) => {e.preventDefault(); authonticate(payload, {
-            onSuccess: () => router.push('/chat')
-          })}} className="p-6 md:p-8">
-            <div className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit((data) => {console.log('DATAATATAT', data);authonticate({...data,redirect: false, mode: 'register'})})} className="p-6 md:p-8">
+            <div className="flex flex-col gap-6" >
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Register to Huginn</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Huginn account
+                  Where Memory Inspires, Thought Soars
                 </p>
               </div>
+
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Label className='ml-1' htmlFor="name">User name</Label>
+                <Input id="name" type="text" placeholder="John Doe" required {...register("name", {
+                  required: "Name is required",
+                  maxLength: { value: 30, message: "Maximum character length for name is 30" },
+                  minLength: { value: 3, message: "Minimum character length for name is 3" }})} />
+                {errors.name && <p className="text-destructive text-xs">{errors.name.message}</p>}
               </div>
+
               <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+                <Label className='ml-1' htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="m@example.com" required {...register("email", {
+                  required: "email is required"
+                 })} />
+                {errors.email && <p className="text-destructive text-xs">{errors.email.message}</p>}
               </div>
-              <Button type="submit" className="w-full">
-                Login
+
+              <div className="grid gap-3">
+                <Label className='ml-1' htmlFor="password">Password</Label>
+                <Input id="password" name='password' type="password" required {...register("password", {
+                  required: "password is required",
+                  validate: value => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(value) || "Invalid password form"
+                })} />
+                {errors.password && <p className="text-destructive text-xs">{errors.password.message}</p>}
+              </div>
+
+              <div className="grid gap-3">
+                <Label className='ml-1' htmlFor="password">Confirm password</Label>
+
+                <Input id="password" type="password" required {...register("passwordConfirm",
+                { required: "password Confirmation is required",
+                  validate: value => value === watch("password") || "Passwords do not match"
+                })} />
+                {errors.passwordConfirm && <p className="text-destructive text-xs">{errors.passwordConfirm.message}</p>}
+              </div>
+
+              <Button type="submit" className="mt-5 w-full">
+                Register
               </Button>
               <div
                 className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -120,15 +122,21 @@ export function LoginForm({
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="underline underline-offset-4">
-                  Register
+                Already have an account?{" "}
+                <Link href="/login" className="underline underline-offset-4">
+                  Log In
                 </Link>
               </div>
             </div>
           </form>
         </CardContent>
       </Card>
+
+      {/*Boolean(authError) && toast(JSON.parse(authError.message).status === 'fails' ? "Validation Failed": "Oops! something went wrong.. Try again.", {
+         variant: "destructive",
+         description: JSON.parse(authError.message).message
+      })*/}
+
 
       <div
         className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">

@@ -16,9 +16,9 @@ axiosClient.interceptors.request.use(
 
     // get to jwt from the client session
     const session = await getSession();
-
+    console.log('[session]', session);
     // SET TO AUTHORIZATION TOKEN
-    config.headers.Authorization = `Bearer ${session.user.data.token}`
+    config.headers.Authorization = `Bearer ${session?.user?.data?.token}`
     return config;
   },
   (error) => {

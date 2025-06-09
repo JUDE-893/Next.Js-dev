@@ -10,7 +10,7 @@ import { withAuth } from '@/middlewares/auth';
 const publicRoutes = [
   '/login',
   '/register',
-  '/reset-password',
+  '/reset-password/',
   '/forget-password',
   '/unverified-account',
 ]
@@ -23,7 +23,7 @@ export const middleware = async (request) => {
   }
 
   // public routes middleware
-  if (publicRoutes.includes(pathname)) {
+  if (publicRoutes.some((ppath) => pathname.startsWith(ppath))) {
     return middlewarePipline([geoRestrict/*, guest*/]) (request)
   }
 

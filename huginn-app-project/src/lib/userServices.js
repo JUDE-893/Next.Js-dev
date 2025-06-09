@@ -11,7 +11,7 @@ export const sendVerificationMail = async function() {
 
 export const sendPasswordResetRequest = async function(data) {
   console.log('data1', data);
-  const result = await axiosClient.post('/auth/forgot-passworddd', data)
+  const result = await axiosClient.post('/auth/forgot-password', data)
   console.log('data2', data);
 
   console.log('reset request res ', result);

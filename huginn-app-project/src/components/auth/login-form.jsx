@@ -1,10 +1,10 @@
 'use client'
 
-import {useEffect} from 'react'
+import {useEffect,useState, useRef} from 'react'
+import {useSearchParams, useRouter} from 'next/navigation'
 import {useAuthenticate} from '@/hooks/auth/useAuthenticate'
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
-import { useSession } from 'next-auth/react';
 
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
@@ -13,69 +13,65 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 
-export function RegisterForm({
+export function LoginForm({
   className,
   ...props
-}) {
+  }) {
 
-  const session = useSession()
+  const [payload, setPayload] = useState({
+    redirect: false,
+    email: 'Kristopher.Bauermann@mail.de',
+    password:'Password123'
+  });
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const reason = searchParams.get('reason');
+
   const {authonticate, Authenticating, authError} = useAuthenticate();
 
 
   useEffect(()=> {
+    console.log(authError)
+    // auth error toast
     Boolean(authError) && toast(JSON.parse(authError.message).status === 'fails' ? "Validation Failed": "Oops! something went wrong.. Try again.", {
        variant: "destructive",
-       description: <p className='text-secondary text-xs'>{JSON.parse(authError.message).message}</p>
-    })
+       description: <p className='text-destructive text-xs'>{JSON.parse(authError.message).message}</p>
+    });
+
   },[authError])
 
 
-  let payload = {
-    redirect: false,
-    name: "Kristopher Bauermann",
-    email: 'Kristopher.Bauermann@mail.de',
-    password:'Password123',
-    passwordConfirm:'Password123',
-    mode: 'register'
-  }
 
   return (
     <div className={cn("flex flex-col gap-6 items-center", className)} {...props}>
 
-
-      <Card className="overflow-hidden bg-background p-0 w-110">
+      <Card className="overflow-hidden bg-background p-0 w-100">
         <CardContent className="grid p-0 ">
-          <form onSubmit={(e) => {e.preventDefault(); authonticate(payload)}} className="p-6 md:p-8">
+          <form onSubmit={(e) => {e.preventDefault(); authonticate(payload, {
+            onSuccess: () => router.push('/chat')
+          })}} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Register to Huginn</h1>
+                <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-muted-foreground text-balance">
-                  Where Memory Inspires, Thought Soars
+                  Login to your Huginn account
                 </p>
               </div>
-
               <div className="grid gap-3">
-                <Label className='ml-1' htmlFor="name">User name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required />
+                <Label htmlFor="email">Email</Label>
+                <Input value={payload.email} onChange={(e) => setPayload({...payload, email: e.target.value})} id="email" type="email" placeholder="m@example.com" required />
               </div>
-
               <div className="grid gap-3">
-                <Label className='ml-1' htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <Link href="/forget-password" className="ml-auto text-sm underline-offset-2 hover:underline">
+                    Forgot your password?
+                  </Link>
+                </div>
+                <Input value={payload.password} onChange={(e) => setPayload({...payload, password: e.target.value})} id="password" type="password" required />
               </div>
-
-              <div className="grid gap-3">
-                <Label className='ml-1' htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
-              </div>
-
-              <div className="grid gap-3">
-                <Label className='ml-1' htmlFor="password">Confirm password</Label>
-                <Input id="password" type="password" required />
-              </div>
-
-              <Button type="submit" className="mt-5 w-full">
-                Register
+              <Button type="submit" className="w-full">
+                Login
               </Button>
               <div
                 className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -110,21 +106,15 @@ export function RegisterForm({
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Already have an account?{" "}
-                <Link href="/login" className="underline underline-offset-4">
-                  Log In
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="underline underline-offset-4">
+                  Register
                 </Link>
               </div>
             </div>
           </form>
         </CardContent>
       </Card>
-
-      {/*Boolean(authError) && toast(JSON.parse(authError.message).status === 'fails' ? "Validation Failed": "Oops! something went wrong.. Try again.", {
-         variant: "destructive",
-         description: JSON.parse(authError.message).message
-      })*/}
-
 
       <div
         className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
