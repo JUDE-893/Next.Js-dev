@@ -9,6 +9,7 @@ import { DataTable } from "@/components/custom/data-table";
 import { UserNav } from "@/components/custom/user-nav";
 import { ModeToggle } from "@/components/custom/ThemeSwitcher";
 import AnimateText from "@/components/custom/AnimateText";
+import Spinner from "@/components/custom/Spinner";
 import { Moon } from 'lucide-react'
 // import { taskSchema } from "./data/schema";
 
@@ -18,6 +19,8 @@ import { Moon } from 'lucide-react'
 export default function TaskPage() {
 
   const {isLoading, data, error} = useGetTasks();
+
+  if (isLoading) return <Spinner/>
 
   return (
     <>

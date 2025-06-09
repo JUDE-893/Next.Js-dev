@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import AnimateText from "@/components/custom/AnimateText";
+import Spinner from "@/components/custom/Spinner";
 
 
 export default function Page() {
@@ -19,6 +20,8 @@ export default function Page() {
   const params = useParams()
   const {isLoading, data, error} = useGetTask(params.taskId);
   const {isPending, mutate, DeleteError} = useDeleteTask();
+
+  if (isLoading) return <Spinner/>
 
   return (
     <div className="w-full max-w-4xl mx-auto py-8 px-4 md:px-6">
