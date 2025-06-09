@@ -24,6 +24,8 @@ import {
 
 import { DataTablePagination } from "@/components/custom/data-table-pagination"
 import { DataTableToolbar } from "@/components/custom/data-table-toolbar"
+import EnterAnimation from "@/components/custom/EnterAnimation";
+
 
 export function DataTable({
   columns,
@@ -82,19 +84,21 @@ export function DataTable({
           {true && <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          <EnterAnimation>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                            </EnterAnimation>
+                        </TableCell>
+                    ))}
+                  </TableRow>
               ))
             ) : (
               <TableRow>
