@@ -1,3 +1,5 @@
+
+
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -13,10 +15,11 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-
+import DeleteMessageModal from './DeleteMessageModal'
 
 
 export default function MessageContextMenu({children, CachedMessage}) {
+
 
   return (
     <ContextMenu>
@@ -63,8 +66,8 @@ export default function MessageContextMenu({children, CachedMessage}) {
 
         <ContextMenuSeparator />
 
-        <ContextMenuItem inset>
-          Delete
+        <ContextMenuItem inset onSelect={(e) => e.preventDefault()}>
+          <DeleteMessageModal />
           <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
 

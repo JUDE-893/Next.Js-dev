@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { decryptMessage } from '@/lib/messagesServices';
 import { timeFormat } from '@/lib/utils';
 
@@ -7,22 +7,23 @@ import Contact from '@/components/main/contact/Contact'
 import DateSeparator from '@/components/main/chatbox/DateSeparator'
 import MessageContextMenu from './MessageContextMenu'
 
-export default function MessageItem({className, message, isJoinMessage}) {
+export default memo(function MessageItem({className, message, isJoinMessage}) {
 
 
   const [msg, setMsg] = useState(null)
 
   useEffect( () => {
     ( async () => {
-      console.log('gsm');
-      const m = await decryptMessage(message?.content?.text?.encrypted, message?.content?.text?.iv);
+      let m;
+      if (message?.content) m = await decryptMessage(message?.content?.text?.encrypted, message?.content?.text?.iv);
+      else m = <p className='text-input text-xs '>this messages was deleted</p>
       setMsg(m)
     })()
-  },[]);
+  },[message?.updatedAt ?? 0]);
 
 
   return (
-    <MessageContextMenu  key={message?._id} id={message?._id}>
+    <MessageContextMenu  key={message?._id} id={message?._id} >
     <div className="" key={message?._id}>
         {msg && <> {!isJoinMessage && <Contact className={`text-${message.sender.color} mt-3 text-[14.4px] `}contact={message.sender} sideChild={
           <p className='text-xs text-muted ml-3 mt-1'>{timeFormat(message.createdAt)}</p>}
@@ -33,4 +34,9 @@ export default function MessageItem({className, message, isJoinMessage}) {
     </div>
     </MessageContextMenu >
   )
+}, isNotUpdatedMessage)
+
+
+function isNotUpdatedMessage(oldProps, newProps) {
+  return oldProps.message?.updatedAt === newProps.message?.updatedAt;
 }

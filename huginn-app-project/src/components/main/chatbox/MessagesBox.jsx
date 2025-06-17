@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useGetMessages } from '@/hooks/conversation/useMessage';
+import { useGetMessages, useUpdateMessage } from '@/hooks/conversation/useMessage';
+import { useSocketEvent } from '@/hooks/socket/useSocketEvent';
 import dynamic from 'next/dynamic';
 
 import MessageItem from './MessageItem';
+import MessageFeatsProvider from './MessageFeatsProvider';
 import { Loader2 } from "lucide-react"
 // import {ScrollShadow} from "@heroui/react";
 const ScrollShadow = dynamic(
@@ -12,11 +14,26 @@ const ScrollShadow = dynamic(
   { ssr: false }
 );
 
+
 export default function MessagesBox({className, conv_id}) {
 
   const bottomRef = useRef(null);
   const [lastSender, setLastSender] = useState(null);
   let sender = lastSender;
+  const setDeletedMessage = useUpdateMessage();
+
+  const deleteMessageEvent = useSocketEvent('delete-message',
+  // on delete-message event
+  (data) => {
+    data = JSON.parse(data);
+    setDeletedMessage(data.conv_id, {id: data.msgId, content: null, updatedAt: Date.now()}, data.page)
+  },
+  // on Aknowlege delete message event
+  (data) => {
+    data = JSON.parse(data);
+    setDeletedMessage(data.conv_id, {id: data.msgId, content: null, updatedAt: Date.now()}, data.page)
+  },
+)
 
   const {data, fetchNextPage, hasNextPage, isFetchingNextPage} = useGetMessages(conv_id);
 
@@ -33,7 +50,6 @@ export default function MessagesBox({className, conv_id}) {
 
   if( isFetchingNextPage ) return <Loader2 size={40} className="animate-spin text-primary ml-45 mr-25 mt-50" />
 
-
   //  function that decides where the message component should show the user avatar is case of a new chat  <ls_id> : last sender id
   const isJoinMessage = (ls_id) => {
     let r = sender !== ls_id
@@ -42,13 +58,14 @@ export default function MessagesBox({className, conv_id}) {
     // To contenu : && message.date.month & dat & year == new date() => true
   }
 
-  console.log('type of mesage',  data?.pages?.[0]?.messages.__proto__);
   return (
     <ScrollShadow size={100} hideScrollBar className={`h-[80vh] flex-1 ${className}`}>
       <div className={(data?.pages[0].messages.length > 0) ? "h-full" : ""}>
         {(data?.pages[0].messages.length > 0)
           ? data?.pages[0].messages.map((msg) =>
-              <MessageItem isJoinMessage={isJoinMessage(msg.sender._id)} message={msg} />
+              <MessageFeatsProvider page={0} deleteEvent={deleteMessageEvent} conv_id={conv_id} msg={msg}>
+                <MessageItem isJoinMessage={isJoinMessage(msg.sender._id)} message={msg}  />
+              </MessageFeatsProvider>
             )
           : <span className='flex flex-col justify-center h-full items-center text-center text-muted italic'>
               No messages yet! Remember, a conversation always starts from one part ;)

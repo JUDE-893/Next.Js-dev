@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSocket } from '@/components/SocketProvider';
 
-export function useSocketEvent(eventName, onEvent) {
+export function useSocketEvent(eventName, onEvent, onAkng) {
 
   const socketClient = useSocket();
 
@@ -15,7 +15,7 @@ export function useSocketEvent(eventName, onEvent) {
 
   return {
     emit: (data) => {
-      socketClient?.emit(eventName,data)
+      socketClient?.emit(eventName,data, onAkng)
     }
   }
 }

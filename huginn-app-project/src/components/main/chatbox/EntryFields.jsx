@@ -42,7 +42,7 @@ export default function EntryFields({ className, conv_id, socketEvent }) {
     console.log({e: uInt8ArrayToHex(encrypted), iv: uInt8ArrayToHex(iv)});
     let vol_id = generateUniqueStr();
     let data = {vol_id, conv_id, content: {text: {encrypted: uInt8ArrayToHex(encrypted), iv: uInt8ArrayToHex(iv)}}, createdAt: new Date()};
-    setNewMessage(conv_id, {...data, sender: session.user.data.user, _id: vol_id})
+    setNewMessage(conv_id, {...data, sender: session.user.data.user, _id: vol_id}, 0)
     setNewConversationMessage(conv_id, {...data, sender: session.user.data.user, _id: vol_id});
 
     socketEvent.emit(data);

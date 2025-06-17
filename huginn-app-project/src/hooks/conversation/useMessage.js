@@ -9,7 +9,7 @@ export function useGetMessages(id) {
     queryFn: ({ pageParam }) => getMessages(id, pageParam),
     staleTime: Infinity,
     initialPageParam: null,
-    getNextPageParam: (lastPage) => {console.log('Last in , last out', lastPage); return lastPage.messages?.[-1]?._id}
+    getNextPageParam: (lastPage) => {return lastPage.messages?.[-1]?._id}
   });
 
   return {data, fetchNextPage, hasNextPage, isFetchingNextPage}
@@ -32,8 +32,8 @@ export function useSendMessage(id) {
 const updateMessage = function() {
   return (messages, data) =>  {
     return messages.map((msg) => {
-    if(msg._id = data.vol_id) {
-      return data._doc
+    if(msg._id === data.id) {
+      return {...msg, ...data, id: undefined}
     }
     return msg
   })
@@ -49,14 +49,16 @@ const newMessage = function() {
 export function updateCachedMessages(mutationFn) {
   const queryClient = useQueryClient();
 
-  return (conv_id, data) => {
+  return (conv_id, data, pageIndex=0) => {
     queryClient.setQueryData([conv_id], (old) => {
+
     if (!old?.pages?.length) {
       return {...old, pages: [{messages: [data]}]}
     }
+
     return {...old,
       pages: old.pages.map((page,index) => {
-        if (index === 0) {
+        if (index === pageIndex) {
           let r = mutationFn(page.messages,data);
           return {...page, messages: r}
           // return {...page, messages: [...page.messages, data]}

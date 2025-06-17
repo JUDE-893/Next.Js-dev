@@ -25,37 +25,6 @@ import {
 } from "@/components/ui/sidebar"
 
 
-
-
-// Menu items.
-// const items = [
-//   {
-//     name: "Alexis Sanchez",
-//     id: "fe425d6de400e7",
-//     nameTag: "AS",
-//     profileImage: null,
-//     message: {content : 'ok later', time: "20:14"},
-//     status: "online"
-//   },
-//   {
-//     name: "Lucas coper",
-//     id: "fe425d6de400o7",
-//     nameTag: "LC",
-//     profileImage: null,
-//     message: {content : 'allright it Done', time: "10:14"},
-//     status: "online"
-//   },
-//   {
-//     name: "Jonnas Schmidtmann",
-//     id: "fe425d6de400p7",
-//     nameTag: "JS",
-//     profileImage: null,
-//     message: {content : 'That\'s good', time: "7:14"},
-//     status: "online"
-//   }
-//
-// ]
-
 const dropDownOpts = [
   {
     name: <InviteContactModal>
@@ -91,11 +60,15 @@ export default function ContactSideBar() {
   (async () => {
     if (data) {
       let decryptedMessages = await data?.conversations?.map(async (item) => {
+        // message deleted
+        if (item?.lastMessage && !item?.lastMessage?.content) return -1;
+        // mesage
         if (item?.lastMessage) { // message exists
           let { encrypted, iv } = item?.lastMessage?.content?.text;
           let message  = await decryptMessage(encrypted, iv);
           return shorterStr(message,30);
         }
+        // no messages
         return null // message inexistant
       });
       setMessages(decryptedMessages)
@@ -103,6 +76,17 @@ export default function ContactSideBar() {
   })()
   },[data])
 
+  // handle the logic of message content to display
+  const displayMessage = (item, index) => {
+    if (item?.lastMessage) {
+      if (!messages?.[index]) {
+        return (<span className=" italic">decrypting messages ..</span>)
+      }
+      return (messages?.[index]?.value !== -1 ? messages?.[index] : <span className=" italic">This messages was deleted!</span>);
+    }
+
+    return (<span className=" italic">No messages yet!</span>);
+  }
 
   return (
     <Sidebar className="ml-12 relative ">
@@ -134,8 +118,7 @@ export default function ContactSideBar() {
                     }>
 
                       <p className='text-input text-xs'>
-                        {item?.lastMessage ? (messages?.[index] ?? <span className=" italic">decrypting messages ..</span> )
-                        : <span className=" italic">No messages yet!</span>}
+                        {displayMessage(item, index)}
                       </p>
                     </Contact>
                   </Link>
