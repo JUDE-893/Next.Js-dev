@@ -1,7 +1,8 @@
 "use client"
 
-import { X } from "lucide-react"
+import { X, Plus } from "lucide-react"
 
+import {useRouter} from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/custom/data-table-view-options"
@@ -12,6 +13,7 @@ import { DataTableFacetedFilter } from "@/components/custom/data-table-faceted-f
 export function DataTableToolbar({
   table,
 }) {
+  const router = useRouter();
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
@@ -50,6 +52,13 @@ export function DataTableToolbar({
           </Button>
         )}
       </div>
+      <Button
+        variant="outline"
+        onClick={() => router.push('/tasks/new')}
+        className="h-8 px-2 lg:px-3 mr-2"
+      >
+        <Plus /> ADD
+      </Button>
       <DataTableViewOptions table={table} />
     </div>
   )
