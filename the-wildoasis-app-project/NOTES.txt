@@ -1,0 +1,15 @@
+////// DOCUMENTATIONAL FILE //////
+
+**Link**
+import link from 'next/link'
+- Pre-fetching pages (JavaScript Bundle, assets).
+- Cashing the pages (JavaScript Bundle, assets).
+- Chunk-Spliting, where each page is downloaded as standalone unit.
+
+**Image**
+import link from 'next/image'
+- Automatic lazy loading.
+- caching
+- auto-responsiveness
+- size optimisation
+- SEO friendly (alt attr.)
