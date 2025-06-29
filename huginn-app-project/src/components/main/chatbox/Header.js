@@ -1,9 +1,9 @@
 "use client"
 
-import { Phone, Video, EllipsisVertical  } from 'lucide-react';
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
+import { EllipsisVertical  } from 'lucide-react';
+import CallButtons from "@/components/main/chatbox/calls/CallButtons"
 import Contact from "@/components/main/contact/Contact"
+import { Separator } from "@/components/ui/separator"
 import Menu from "./DropDownMenu"
 
 export default function Header({contact, className}) {
@@ -15,8 +15,7 @@ export default function Header({contact, className}) {
           <p className={`text-${theme} text-sm`}>{contact.status}</p>
         </Contact>
         <div className='flex gap-2 absolute right-0'>
-          <Button variant="secondary" onClick={() => console.log('Appel')}><Phone /></Button>
-          <Button variant="secondary" onClick={() => console.log('Appel')}><Video  /></Button>
+            <CallButtons contact={contact} />
           <Menu />
         </div>
       </div>

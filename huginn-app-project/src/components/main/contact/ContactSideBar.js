@@ -55,7 +55,7 @@ export default function ContactSideBar() {
   const {data, isLoading, error} = useGetConversations();
 
   // decrypte message
-  useEffect( () =>{
+  useEffect( () => {
 
   (async () => {
     if (data) {
@@ -64,8 +64,13 @@ export default function ContactSideBar() {
         if (item?.lastMessage && !item?.lastMessage?.content) return -1;
         // mesage
         if (item?.lastMessage) { // message exists
+          let message;
+          if (item?.lastMessage?.content?.media?.type === 'call') {
+            message = "📲  CALLED"
+          }else {
           let { encrypted, iv } = item?.lastMessage?.content?.text;
-          let message  = await decryptMessage(encrypted, iv);
+           message  = await decryptMessage(encrypted, iv);
+        }
           return shorterStr(message,30);
         }
         // no messages

@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppSidebar } from "@/components/app-sidebar"
 import Providers from '@/app/Providers';
+import CallRenderer from '@/components/main/chatbox/calls/CallRenderer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,8 @@ export default function RootLayout({ children }) {
         <Providers>
           <AppSidebar />
           <main className=" w-screen ml-[-256.5px] col-span-1">
-          {children}
+            <CallRenderer />
+            {children}
           </main>
         </Providers>
     </body>
