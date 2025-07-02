@@ -25,6 +25,7 @@ export default function CallsProvider({children}) {
      // contact object
   });
 
+
   // set up start calls event emmiter & listener
   const startCallEvent = useSocketEvent('start-call',
     // on new-call event

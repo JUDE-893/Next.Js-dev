@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import {useCalls} from "./CallsProvider"
 import { useParams } from 'next/navigation';
+
 import { Button } from "@/components/ui/button"
 import { Phone, Video  } from 'lucide-react';
 
@@ -17,7 +18,6 @@ export default function CallButtons({contact}) {
     <>
       <Button variant="secondary" onClick={() => {
         startCallEvent.emit({conv_id: conversationID, type: 'audio'})
-        console.log('Appel', {conv_id: conversationID, type: 'audio'})
       }}><Phone /></Button>
 
       <Button variant="secondary" onClick={() => {
