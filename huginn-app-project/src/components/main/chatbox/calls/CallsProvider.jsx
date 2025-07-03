@@ -1,8 +1,10 @@
 "use client"
-import { useState, useEffect, useContext, createContext } from 'react';
+
+import { useState, useContext, createContext } from 'react';
 import { useSocketEvent } from "@/hooks/socket/useSocketEvent";
+import { useNewMessage } from '@/hooks/conversation/useMessage';
+import { useNewConversationMessage } from '@/hooks/conversation/useConversation';
 import { toast } from "sonner"
-import { getSession } from 'next-auth/react';
 
 
 const CallsContext = createContext();
@@ -25,20 +27,21 @@ export default function CallsProvider({children}) {
      // contact object
   });
 
+  const setNewMessage = useNewMessage();
+  const setNewConversationMessage = useNewConversationMessage();
+
 
   // set up start calls event emmiter & listener
   const startCallEvent = useSocketEvent('start-call',
     // on new-call event
     (data) => {
       data = JSON.parse(data);
-      console.log('recieve new call ', data);
       // set call state
       setCallData({...callData, contact: data.sender, type: data.content.media.metadata.type, onGoingCall: true, tempToken: data.tempToken, callID: data._id, conv_id: data.conv_id});
     },
     // on acknowlege new-call event
     (data) => {
       data = JSON.parse(data);
-      console.log('return call DATA', data);
       // the recipent was offline
       if (!data.ready) {
         toast("Unable to reach the recipent!", {
@@ -58,16 +61,21 @@ export default function CallsProvider({children}) {
     (data) => {
       // set call state
       data = JSON.parse(data);
-      console.log('r d', data);
-      if (data?.action === "end") setCallData({...callData, ...initial});
+      if (data?.action === "end") {
+        setNewMessage(data.conv_id, data.callObj);
+        setNewConversationMessage(data.conv_id, data.callObj);
+        setCallData({...callData, ...initial});
+      };
     },
     // on acknowlege respond | reject | end -call event
     (data) => {
-      console.log('d', data);
       data = JSON.parse(data);
-      console.log('b d', data);
       if (data.action === "respond") setCallData({...callData, tempToken: null, callToken: callData?.tempToken })
-      else setCallData({...callData, ...initial});
+      else {
+        setNewMessage(data.conv_id, data.callObj);
+        setNewConversationMessage(data.conv_id, data.callObj);
+        setCallData({...callData, ...initial});
+      };
     }
 
 )

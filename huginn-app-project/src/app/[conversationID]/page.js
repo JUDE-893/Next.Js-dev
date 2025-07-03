@@ -25,6 +25,7 @@ export default function Home({children}) {
   // on new-message Event
   (data) => {
     let msgData = JSON.parse(data);
+    msgData = JSON.parse(msgData);
     console.log('{new-message data}',msgData);
     setNewMessage(msgData.conv_id, msgData);
     setNewConversationMessage(msgData.conv_id, msgData);

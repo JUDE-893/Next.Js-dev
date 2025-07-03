@@ -1,0 +1,17 @@
+fix --issue : APP GOING NON-TOBBABLE ENTIRELY AFTER DELETE MESSAGE OPERATION
+
+-> page going non-tobbable as the context menu got re-rendered after the message delete operartion.
+-> the issue arise as the _id prop  object massage passed to the MessageItem got chages,
+-> as it stills holding the volatile id because of that the MessageItem compo is configured to re-render only when the updatedAt property changes.
+-> and then as the _id is used as value for the key prop of the MessageContextMenu it got re-rendred,
+-> and while the context menu is nesting the AlertDialog, which is in the meanWhile was opened and focuced;
+-> the MessagecontextMenu did re-created with the new key prop value.
+-> radix closes the context menu as it assumes that the trigger is eather re-created or removed, destroing the AlertDialog with it (from the the virtual dom),
+-> however by that the AlertDialog did not closes gracefully and as its using a portal internaly,
+-> react & reactDom couldn't clean and update the focus effect as it from thier point of view don't make part of the updated sub-tree
+-> the focus effect stays in the physical dom feazing tha app
+
+@MessageContextMenu removed the key prop definitly from the root component
+-> redix ui finds the same comtextmenu root
+-> assumes the trigger did not removed or created
+  => the context menu did not got closed ungracefully
