@@ -11,10 +11,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function Dialog({label, trigger, callBack, pending=false, children, disabled=true}) {
+export default function Dialog({label, trigger, callBack, pending=false, children, disabled=true, modal=true}) {
 
   return (
-    <AlertDialog>
+    <AlertDialog modal={modal}>
       <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -24,8 +24,8 @@ export default function Dialog({label, trigger, callBack, pending=false, childre
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={callBack} disabled={disabled || pending}>{pending ? <Loader2 className="animate-spin" /> : 'Continue'}</AlertDialogAction>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

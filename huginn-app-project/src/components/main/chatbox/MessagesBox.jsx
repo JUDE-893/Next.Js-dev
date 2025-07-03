@@ -25,7 +25,7 @@ export default function MessagesBox({className, conv_id}) {
   const deleteMessageEvent = useSocketEvent('delete-message',
   // on delete-message event
   (data) => {
-    data = JSON.parse(data);
+    data = JSON.parse(JSON.parse(data));
     setDeletedMessage(data.conv_id, {id: data.msgId, content: null, updatedAt: Date.now()}, data.page)
   },
   // on Aknowlege delete message event

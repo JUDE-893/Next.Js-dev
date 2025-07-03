@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useMessageFeats } from './MessageFeatsProvider'
 import Dialog from '@/components/ui/custom/AlertDialog'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-
 export default function DeleteMessageModal() {
 
   const [deleteFor, setDeleteFor] = useState("user");
@@ -18,6 +17,7 @@ export default function DeleteMessageModal() {
       label='Are you sure you want to delete this message?'
       callBack={handleDelete}
       disabled={false}
+      modal={false}
       >
       <RadioGroup
         value={deleteFor}

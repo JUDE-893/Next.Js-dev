@@ -13,7 +13,7 @@ export default function MessageFeatsProvider({children,conv_id, msg, page, delet
     deleteEvent.emit({page, conv_id, msgId: msg?._id, deleteFor: dfor})};
 
   return (
-    <MessageFeatsContext.Provider value={{deleteFn}} >
+    <MessageFeatsContext.Provider key={msg._id} value={{deleteFn}} >
       { children }
     </MessageFeatsContext.Provider>
   )
