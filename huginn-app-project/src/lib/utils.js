@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
-import { format } from 'date-fns';
+import { format, differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -39,4 +39,30 @@ export const shorterStr = (str,ln) => {
 // generate a unique random string
 export function generateUniqueStr() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+
+/**
+ * Calculates the duration between two dates and returns a human-readable string
+ * @param {Date|string} start - Start date
+ * @param {Date|string} end - End date
+ * @returns {string} Human-readable duration (e.g., "1h 1min" or "1min 33s")
+ */
+function formatDuration(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  const hours = differenceInHours(endDate, startDate);
+  const minutes = differenceInMinutes(endDate, startDate) % 60;
+  const seconds = differenceInSeconds(endDate, startDate) % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}min`;
+  }
+
+  if (minutes > 0) {
+    return `${minutes}min ${seconds}s`;
+  }
+
+  return `${seconds}s`;
 }

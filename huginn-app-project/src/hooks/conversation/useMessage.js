@@ -2,17 +2,15 @@ import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from '@tansta
 import { getMessages, sendMessage} from '@/lib/messagesServices';
 
 
-export function useGetMessages(id) {
+export function useGetMessages(id,pageParam) {
 
-  const {data, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
-    queryKey: [id],
-    queryFn: ({ pageParam }) => getMessages(id, pageParam),
+    const {isLoading, data, error} = useQuery({
+    queryKey: [id, pageParam],
+    queryFn: () => getMessages(id, pageParam),
     staleTime: Infinity,
-    initialPageParam: null,
-    getNextPageParam: (lastPage) => {return lastPage.messages?.[-1]?._id}
   });
 
-  return {data, fetchNextPage, hasNextPage, isFetchingNextPage}
+  return {isLoading, data, error}
 }
 
 export function useSendMessage(id) {
@@ -49,23 +47,17 @@ const newMessage = function() {
 export function updateCachedMessages(mutationFn) {
   const queryClient = useQueryClient();
 
-  return (conv_id, data, pageIndex=0) => {
-    queryClient.setQueryData([conv_id], (old) => {
+  return (conv_id, data, pageIndex=1) => {
+    console.log("pageIndex",pageIndex);
+    queryClient.setQueryData([conv_id, pageIndex], (old) => {
 
-    if (!old?.pages?.length) {
-      return {...old, pages: [{messages: [data]}]}
+    if (!old?.messages?.length) {
+      return {...old, messages: [data]}
     }
 
-    return {...old,
-      pages: old.pages.map((page,index) => {
-        if (index === pageIndex) {
-          let r = mutationFn(page.messages,data);
-          return {...page, messages: r}
-          // return {...page, messages: [...page.messages, data]}
-        }
-        return page
-      })
-    }
+    let r = mutationFn(old.messages, data);
+    return {...old, messages: r}
+
   });
  }
 }

@@ -3,8 +3,9 @@ import axiosClient from './axiosClient';
 /* CONVERSATION SERVICES */
 
 
-export const getMessages = async function(id, pageParam) {
-  const result = await axiosClient.get(`/conversations/${id}/messages`, { params: { before: pageParam } })
+export const getMessages = async function(id, page) {
+
+  const result = await axiosClient.get(`/conversations/${id}/messages`, { params: { page } })
 
   console.log(`get conv ${id}`, result);
   return result
