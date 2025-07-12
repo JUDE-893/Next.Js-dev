@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { decryptMessage } from '@/lib/messagesServices';
 
-import DateSeparator from '@/components/main/chatbox/DateSeparator'
+import DateSeparator from './DateSeparator'
 
 export default function MessageText({ className, message, children }) {
 

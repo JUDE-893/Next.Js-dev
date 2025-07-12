@@ -7,7 +7,8 @@ import { useNewConversationMessage } from '@/hooks/conversation/useConversation'
 import { useSocketEvent } from '@/hooks/socket/useSocketEvent';
 import { useUpdateMessage } from '@/hooks/conversation/useMessage';
 
-import MessagesBox from "@/components/main/chatbox/MessagesBox"
+// import MessagesBox from "@/components/main/chatbox/MessagesBox"
+import MessageContainer from "@/components/main/chatbox/messages/MessageContainer"
 import Header from "@/components/main/chatbox/Header"
 import EntryFields from "@/components/main/chatbox/EntryFields"
 import ReportInterface from "@/components/ui/custom/ReportInterface"
@@ -34,7 +35,7 @@ export default function Home({children}) {
    (resp) => {
      let data = JSON.parse(resp);
      console.log('"resp"', data);
-     setUpdatedMessage(data?.conv_id, data?.data, 0)
+     setUpdatedMessage(data?.conv_id, data?.data, 1)
 
    }
 );
@@ -54,7 +55,7 @@ export default function Home({children}) {
       <Header contact={destinator} className=" absolute top-0" />
       <main className="flex-1 pt-20">
         {/* messages box */}
-        <MessagesBox conv_id={params.conversationID}  />
+        <MessageContainer conv_id={params.conversationID}  />
       </main>
       {/* entry box */}
       <EntryFields className=" absolute bottom-0" conv_id={params.conversationID} socketEvent={socketEvent}/>

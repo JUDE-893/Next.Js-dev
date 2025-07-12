@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Phone, PhoneMissed, PhoneOff, VideoOff, Video } from 'lucide-react';
 
 
-import DateSeparator from '@/components/main/chatbox/DateSeparator'
+import DateSeparator from './DateSeparator'
 
 export default function MessageText({ className, message, children }) {
   let Compo;
